@@ -1,0 +1,14 @@
+{
+  "name": "razorpay-recoverai-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "build:merchant": "cd frontend && npm install && npm run build",
+    "build:ecommerce": "cd ecommerce/frontend && npm install && npm run build",
+    "dev": "cd frontend && npm run dev"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}
