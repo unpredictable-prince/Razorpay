@@ -8,8 +8,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
-# SQLite database URL (creates recoverai.db consistently in the backend directory)
-DB_PATH = os.path.join(BASE_DIR, "recoverai.db")
+# SQLite database URL (creates recoverai.db in /tmp on Vercel or in backend dir locally)
+if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+    DB_PATH = "/tmp/recoverai.db"
+else:
+    DB_PATH = os.path.join(BASE_DIR, "recoverai.db")
+
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 # engine setup with check_same_thread=False for SQLite compatibility with FastAPI

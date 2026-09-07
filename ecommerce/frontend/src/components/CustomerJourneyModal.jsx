@@ -9,7 +9,8 @@ export default function CustomerJourneyModal({ customerId, onClose }) {
   useEffect(() => {
     if (customerId) {
       setLoading(true);
-      fetch(`http://localhost:8000/transactions/customer/${customerId}`)
+      const API_BASE = import.meta.env.VITE_RECOVERAI_API_URL || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : "");
+      fetch(`${API_BASE}/transactions/customer/${customerId}`)
         .then((res) => res.json())
         .then((data) => setJourneyData(data))
         .catch((err) => console.error("Error fetching customer journey:", err))

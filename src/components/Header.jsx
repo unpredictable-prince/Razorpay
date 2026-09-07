@@ -4,8 +4,10 @@ import { ShieldCheck, RefreshCw, Wifi, WifiOff, Bell, LogOut, UserCheck, Shoppin
 export default function Header({ isConnected, isRefreshing, onRefresh, onOpenNotifications, onLogout, onOpenProfile, merchant, onToggleView }) {
   const [unreadCount, setUnreadCount] = useState(0);
 
+  const API_BASE = import.meta.env.VITE_RECOVERAI_API_URL || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : "");
+
   const fetchUnreadCount = () => {
-    fetch('http://localhost:8000/notifications/unread-count')
+    fetch(`${API_BASE}/notifications/unread-count`)
       .then((res) => {
         if (res.ok) return res.json();
         return { unread_count: 0 };

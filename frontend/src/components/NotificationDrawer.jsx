@@ -7,7 +7,7 @@ export default function NotificationDrawer({ isOpen, onClose, onSelectTransactio
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
 
-  const API_BASE = "http://localhost:8000";
+  const API_BASE = import.meta.env.VITE_RECOVERAI_API_URL || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : "");
 
   const fetchNotifications = () => {
     setLoading(true);

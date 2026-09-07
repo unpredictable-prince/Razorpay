@@ -34,7 +34,7 @@ import MerchantCharts from "./components/MerchantCharts";
 import MerchantProfileModal from "./components/MerchantProfileModal";
 import { Sparkles, RefreshCw, Zap, LayoutDashboard, ShieldCheck, BarChart3 } from "lucide-react";
 
-const RECOVERAI_API_URL = "http://127.0.0.1:8000";
+const RECOVERAI_API_URL = import.meta.env.VITE_RECOVERAI_API_URL || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://127.0.0.1:8000" : "");
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {

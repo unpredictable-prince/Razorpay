@@ -5,10 +5,12 @@ export default function DemoController({ onTriggerScenario, onResetDemo }) {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
 
+  const API_BASE = import.meta.env.VITE_RECOVERAI_API_URL || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : "");
+
   const handleSimulate = async (scenario) => {
     setIsSimulating(true);
     try {
-      await fetch("http://localhost:8000/demo/simulate", {
+      await fetch(`${API_BASE}/demo/simulate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -29,7 +31,7 @@ export default function DemoController({ onTriggerScenario, onResetDemo }) {
 
   const confirmReset = async () => {
     try {
-      await fetch("http://localhost:8000/demo/reset", { method: "POST" });
+      await fetch(`${API_BASE}/demo/reset`, { method: "POST" });
       setIsResetModalOpen(false);
       if (onResetDemo) onResetDemo();
     } catch (err) {

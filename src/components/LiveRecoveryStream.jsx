@@ -19,8 +19,10 @@ export default function LiveRecoveryStream({ onSelectTransaction, refreshTrigger
     { id: 10, label: "Notifications", desc: "Merchant + Customer Alert" },
   ];
 
+  const API_BASE = import.meta.env.VITE_RECOVERAI_API_URL || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : "");
+
   const fetchLiveEvents = () => {
-    fetch("http://localhost:8000/transactions/")
+    fetch(`${API_BASE}/transactions/`)
       .then((res) => res.json())
       .then((txs) => {
         const sorted = txs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10);
