@@ -193,9 +193,196 @@ export default function App() {
     <CartProvider>
       {!isAuthenticated ? (
         <AuthPortalPage onLoginSuccess={handleLoginSuccess} />
+      ) : viewMode === "merchant_console" ? (
+        /* VIEW MODE 1: RECOVERAI MERCHANT CONSOLE (SINGLE CLEAN HEADER, NO DOUBLE NAVBARS) */
+        <div className="dashboard-container">
+          {/* Environment Banner */}
+          <div
+            style={{
+              background: "#1e1b4b",
+              color: "#a5b4fc",
+              padding: "0.45rem 1.5rem",
+              fontSize: "0.78rem",
+              fontWeight: 700,
+              borderRadius: "8px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              border: "1px solid #312e81",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <ShieldCheck size={14} color="#818cf8" />
+              <span>RAZORPAY TEST MODE ACTIVE — RECOVERAI REVENUE RECOVERY CONSOLE</span>
+            </div>
+            <span>Single Unified Platform</span>
+          </div>
+
+          {/* RecoverAI Merchant Header */}
+          <Header
+            isConnected={isConnected}
+            isRefreshing={isRefreshing}
+            onRefresh={fetchMerchantData}
+            onOpenNotifications={() => setIsDrawerOpen(true)}
+            onLogout={handleLogout}
+            onOpenProfile={() => setIsProfileOpen(true)}
+            merchant={merchant}
+            onToggleView={() => setViewMode("store")}
+          />
+
+          {/* Demo Controller Toolbar */}
+          <DemoController
+            onTriggerScenario={() => fetchMerchantData()}
+            onResetDemo={() => fetchMerchantData()}
+          />
+
+          {/* Value Proposition Banner */}
+          <div className="recovery-banner" style={{ background: "rgba(99, 102, 241, 0.12)", border: "1px solid rgba(99, 102, 241, 0.3)", padding: "1rem 1.25rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <Sparkles size={20} color="var(--color-brand)" />
+            <div style={{ fontSize: "0.9rem" }}>
+              <strong>RecoverAI Autonomous Agent Active:</strong> Automatically analyzing payment failures, evaluating deterministic guardrails, and executing recovery retries.
+            </div>
+          </div>
+
+          {!isConnected && !isLoading && (
+            <ErrorBanner errorMsg={errorMsg} onRetry={fetchMerchantData} />
+          )}
+
+          {/* Navigation View Tabs */}
+          <div style={{ display: "flex", gap: "0.75rem" }}>
+            <button
+              onClick={() => setActiveMerchantTab("overview")}
+              style={{
+                padding: "0.6rem 1.25rem",
+                borderRadius: "8px",
+                fontWeight: 700,
+                fontSize: "0.85rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                background: activeMerchantTab === "overview" ? "var(--color-brand)" : "var(--bg-secondary)",
+                color: activeMerchantTab === "overview" ? "#fff" : "var(--text-muted)",
+                border: "1px solid var(--border-color)",
+                cursor: "pointer",
+              }}
+            >
+              <LayoutDashboard size={16} />
+              <span>Dashboard Overview</span>
+            </button>
+
+            <button
+              onClick={() => setActiveMerchantTab("charts")}
+              style={{
+                padding: "0.6rem 1.25rem",
+                borderRadius: "8px",
+                fontWeight: 700,
+                fontSize: "0.85rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                background: activeMerchantTab === "charts" ? "var(--color-brand)" : "var(--bg-secondary)",
+                color: activeMerchantTab === "charts" ? "#fff" : "var(--text-muted)",
+                border: "1px solid var(--border-color)",
+                cursor: "pointer",
+              }}
+            >
+              <BarChart3 size={16} />
+              <span>Analytics & Visual Charts</span>
+            </button>
+
+            <button
+              onClick={() => setActiveMerchantTab("live_stream")}
+              style={{
+                padding: "0.6rem 1.25rem",
+                borderRadius: "8px",
+                fontWeight: 700,
+                fontSize: "0.85rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                background: activeMerchantTab === "live_stream" ? "var(--color-brand)" : "var(--bg-secondary)",
+                color: activeMerchantTab === "live_stream" ? "#fff" : "var(--text-muted)",
+                border: "1px solid var(--border-color)",
+                cursor: "pointer",
+              }}
+            >
+              <Zap size={16} />
+              <span>Live Recovery & Pipeline</span>
+            </button>
+          </div>
+
+          {/* Content Rendering */}
+          {isLoading ? (
+            <div style={{ textAlign: "center", padding: "3rem 0" }}>
+              <RefreshCw size={32} className="spin" color="var(--color-brand)" />
+              <p style={{ fontWeight: 600, marginTop: "1rem" }}>Loading Merchant Revenue Recovery Data...</p>
+            </div>
+          ) : activeMerchantTab === "live_stream" ? (
+            <LiveRecoveryStream
+              onSelectTransaction={(tx) => setSelectedTransaction(tx)}
+              refreshTrigger={isRefreshing}
+            />
+          ) : activeMerchantTab === "charts" ? (
+            <>
+              <MetricsCards stats={stats} />
+              <MerchantCharts stats={stats} transactions={transactions} />
+            </>
+          ) : (
+            <>
+              <MetricsCards stats={stats} />
+              <MerchantCharts stats={stats} transactions={transactions} />
+              <div className="dashboard-grid-2">
+                <RecoveryInsights stats={stats} transactions={transactions} />
+                <RecoveryActivityLog
+                  transactions={transactions}
+                  onSelectTransaction={(tx) => setSelectedTransaction(tx)}
+                />
+              </div>
+              <TransactionTable
+                transactions={transactions}
+                onSelectTransaction={(tx) => setSelectedTransaction(tx)}
+              />
+
+              {selectedTransaction && (
+                <TransactionDetailsModal
+                  transaction={selectedTransaction}
+                  onClose={() => setSelectedTransaction(null)}
+                />
+              )}
+
+              {selectedCustomerId && (
+                <CustomerJourneyModal
+                  customerId={selectedCustomerId}
+                  onClose={() => setSelectedCustomerId(null)}
+                />
+              )}
+            </>
+          )}
+
+          <NotificationDrawer
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+            onSelectTransaction={handleSelectPaymentId}
+            onOpenFullPage={() => setIsFullNotifOpen(true)}
+          />
+
+          <NotificationPageModal
+            isOpen={isFullNotifOpen}
+            onClose={() => setIsFullNotifOpen(false)}
+            onSelectTransaction={handleSelectPaymentId}
+          />
+
+          <MerchantProfileModal
+            isOpen={isProfileOpen}
+            onClose={() => setIsProfileOpen(false)}
+            merchant={merchant}
+            stats={stats}
+            onSaveMerchant={(updatedData) => setMerchant(updatedData)}
+          />
+        </div>
       ) : (
+        /* VIEW MODE 2: AURA STORE E-COMMERCE PLATFORM (SINGLE STORE NAVBAR & FOOTER) */
         <div className="app-layout">
-          {/* Main Top Navigation Header */}
           <Navbar
             activePage={activePage}
             setActivePage={navigate}
@@ -205,256 +392,64 @@ export default function App() {
             setViewMode={setViewMode}
           />
 
-          {/* VIEW MODE 1: RECOVERAI MERCHANT CONSOLE */}
-          {viewMode === "merchant_console" ? (
-            <main className="main-content">
-              <div className="dashboard-container" style={{ marginTop: "1rem" }}>
-                {/* Environment Banner */}
-                <div
-                  style={{
-                    background: "#1e1b4b",
-                    color: "#a5b4fc",
-                    padding: "0.4rem 1.5rem",
-                    fontSize: "0.78rem",
-                    fontWeight: 700,
-                    borderRadius: "8px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    border: "1px solid #312e81",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <ShieldCheck size={14} color="#818cf8" />
-                    <span>RAZORPAY TEST MODE ACTIVE — RECOVERAI REVENUE RECOVERY CONSOLE</span>
-                  </div>
-                  <span>Single Unified Platform</span>
-                </div>
+          <main className="main-content">
+            <div className="container">
+              {activePage === "home" && (
+                <HomePage onNavigate={navigate} onSelectProduct={handleSelectProduct} />
+              )}
 
-                {/* Header Bar */}
-                <Header
-                  isConnected={isConnected}
-                  isRefreshing={isRefreshing}
-                  onRefresh={fetchMerchantData}
-                  onOpenNotifications={() => setIsDrawerOpen(true)}
-                  onLogout={handleLogout}
-                  onOpenProfile={() => setIsProfileOpen(true)}
-                  merchant={merchant}
-                  onToggleView={() => setViewMode("store")}
+              {activePage === "products" && (
+                <ProductsPage onSelectProduct={handleSelectProduct} />
+              )}
+
+              {activePage === "product-details" && (
+                <ProductDetailsPage
+                  productId={selectedProductId}
+                  onNavigate={navigate}
+                  onBuyNow={() => navigate("checkout")}
                 />
+              )}
 
-                {/* Demo Controller Toolbar */}
-                <DemoController
-                  onTriggerScenario={() => fetchMerchantData()}
-                  onResetDemo={() => fetchMerchantData()}
+              {activePage === "cart" && (
+                <CartPage
+                  onProceedToCheckout={() => navigate("checkout")}
+                  onNavigate={navigate}
                 />
+              )}
 
-                {/* Value Proposition Banner */}
-                <div className="recovery-banner" style={{ background: "rgba(99, 102, 241, 0.12)", border: "1px solid rgba(99, 102, 241, 0.3)", padding: "1rem 1.25rem", borderRadius: "12px", display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                  <Sparkles size={20} color="var(--color-brand)" />
-                  <div style={{ fontSize: "0.9rem" }}>
-                    <strong>RecoverAI Autonomous Agent Active:</strong> Automatically analyzing payment failures, evaluating deterministic guardrails, and executing recovery retries.
-                  </div>
-                </div>
-
-                {!isConnected && !isLoading && (
-                  <ErrorBanner errorMsg={errorMsg} onRetry={fetchMerchantData} />
-                )}
-
-                {/* Navigation View Tabs */}
-                <div style={{ display: "flex", gap: "0.75rem" }}>
-                  <button
-                    onClick={() => setActiveMerchantTab("overview")}
-                    style={{
-                      padding: "0.6rem 1.25rem",
-                      borderRadius: "8px",
-                      fontWeight: 700,
-                      fontSize: "0.85rem",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      background: activeMerchantTab === "overview" ? "var(--color-brand)" : "var(--bg-secondary)",
-                      color: activeMerchantTab === "overview" ? "#fff" : "var(--text-muted)",
-                      border: "1px solid var(--border-color)",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <LayoutDashboard size={16} />
-                    <span>Dashboard Overview</span>
-                  </button>
-
-                  <button
-                    onClick={() => setActiveMerchantTab("charts")}
-                    style={{
-                      padding: "0.6rem 1.25rem",
-                      borderRadius: "8px",
-                      fontWeight: 700,
-                      fontSize: "0.85rem",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      background: activeMerchantTab === "charts" ? "var(--color-brand)" : "var(--bg-secondary)",
-                      color: activeMerchantTab === "charts" ? "#fff" : "var(--text-muted)",
-                      border: "1px solid var(--border-color)",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <BarChart3 size={16} />
-                    <span>Analytics & Visual Charts</span>
-                  </button>
-
-                  <button
-                    onClick={() => setActiveMerchantTab("live_stream")}
-                    style={{
-                      padding: "0.6rem 1.25rem",
-                      borderRadius: "8px",
-                      fontWeight: 700,
-                      fontSize: "0.85rem",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      background: activeMerchantTab === "live_stream" ? "var(--color-brand)" : "var(--bg-secondary)",
-                      color: activeMerchantTab === "live_stream" ? "#fff" : "var(--text-muted)",
-                      border: "1px solid var(--border-color)",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <Zap size={16} />
-                    <span>Live Recovery & Pipeline</span>
-                  </button>
-                </div>
-
-                {/* Content Rendering */}
-                {isLoading ? (
-                  <div style={{ textAlign: "center", padding: "3rem 0" }}>
-                    <RefreshCw size={32} className="spin" color="var(--color-brand)" />
-                    <p style={{ fontWeight: 600, marginTop: "1rem" }}>Loading Merchant Revenue Recovery Data...</p>
-                  </div>
-                ) : activeMerchantTab === "live_stream" ? (
-                  <LiveRecoveryStream
-                    onSelectTransaction={(tx) => setSelectedTransaction(tx)}
-                    refreshTrigger={isRefreshing}
-                  />
-                ) : activeMerchantTab === "charts" ? (
-                  <>
-                    <MetricsCards stats={stats} />
-                    <MerchantCharts stats={stats} transactions={transactions} />
-                  </>
-                ) : (
-                  <>
-                    <MetricsCards stats={stats} />
-                    <MerchantCharts stats={stats} transactions={transactions} />
-                    <div className="dashboard-grid-2">
-                      <RecoveryInsights stats={stats} transactions={transactions} />
-                      <RecoveryActivityLog
-                        transactions={transactions}
-                        onSelectTransaction={(tx) => setSelectedTransaction(tx)}
-                      />
-                    </div>
-                    <TransactionTable
-                      transactions={transactions}
-                      onSelectTransaction={(tx) => setSelectedTransaction(tx)}
-                    />
-
-                    {selectedTransaction && (
-                      <TransactionDetailsModal
-                        transaction={selectedTransaction}
-                        onClose={() => setSelectedTransaction(null)}
-                      />
-                    )}
-
-                    {selectedCustomerId && (
-                      <CustomerJourneyModal
-                        customerId={selectedCustomerId}
-                        onClose={() => setSelectedCustomerId(null)}
-                      />
-                    )}
-                  </>
-                )}
-
-                <NotificationDrawer
-                  isOpen={isDrawerOpen}
-                  onClose={() => setIsDrawerOpen(false)}
-                  onSelectTransaction={handleSelectPaymentId}
-                  onOpenFullPage={() => setIsFullNotifOpen(true)}
+              {activePage === "checkout" && (
+                <CheckoutPage
+                  onNavigate={navigate}
+                  onOrderCreated={handleOrderCreated}
                 />
+              )}
 
-                <NotificationPageModal
-                  isOpen={isFullNotifOpen}
-                  onClose={() => setIsFullNotifOpen(false)}
-                  onSelectTransaction={handleSelectPaymentId}
+              {activePage === "payment" && (
+                <PaymentPage
+                  order={activeOrder}
+                  onNavigate={navigate}
+                  onPaymentComplete={handlePaymentComplete}
                 />
+              )}
 
-                <MerchantProfileModal
-                  isOpen={isProfileOpen}
-                  onClose={() => setIsProfileOpen(false)}
-                  merchant={merchant}
-                  stats={stats}
-                  onSaveMerchant={(updatedData) => setMerchant(updatedData)}
+              {activePage === "payment-result" && (
+                <PaymentResultPage
+                  resultData={resultData}
+                  onNavigate={navigate}
+                  onRetryPayment={handleRetryPayment}
                 />
-              </div>
-            </main>
-          ) : (
-            /* VIEW MODE 2: AURA STORE E-COMMERCE PLATFORM */
-            <main className="main-content">
-              <div className="container">
-                {activePage === "home" && (
-                  <HomePage onNavigate={navigate} onSelectProduct={handleSelectProduct} />
-                )}
+              )}
 
-                {activePage === "products" && (
-                  <ProductsPage onSelectProduct={handleSelectProduct} />
-                )}
+              {activePage === "my-orders" && (
+                <MyOrdersPage
+                  onRetryPayment={handleRetryPayment}
+                  onNavigate={navigate}
+                />
+              )}
 
-                {activePage === "product-details" && (
-                  <ProductDetailsPage
-                    productId={selectedProductId}
-                    onNavigate={navigate}
-                    onBuyNow={() => navigate("checkout")}
-                  />
-                )}
-
-                {activePage === "cart" && (
-                  <CartPage
-                    onProceedToCheckout={() => navigate("checkout")}
-                    onNavigate={navigate}
-                  />
-                )}
-
-                {activePage === "checkout" && (
-                  <CheckoutPage
-                    onNavigate={navigate}
-                    onOrderCreated={handleOrderCreated}
-                  />
-                )}
-
-                {activePage === "payment" && (
-                  <PaymentPage
-                    order={activeOrder}
-                    onNavigate={navigate}
-                    onPaymentComplete={handlePaymentComplete}
-                  />
-                )}
-
-                {activePage === "payment-result" && (
-                  <PaymentResultPage
-                    resultData={resultData}
-                    onNavigate={navigate}
-                    onRetryPayment={handleRetryPayment}
-                  />
-                )}
-
-                {activePage === "my-orders" && (
-                  <MyOrdersPage
-                    onRetryPayment={handleRetryPayment}
-                    onNavigate={navigate}
-                  />
-                )}
-
-                {activePage === "profile" && <ProfilePage onLogout={handleLogout} />}
-              </div>
-            </main>
-          )}
+              {activePage === "profile" && <ProfilePage onLogout={handleLogout} />}
+            </div>
+          </main>
 
           <CartDrawer onProceedToCheckout={() => navigate("checkout")} />
           <Toast />

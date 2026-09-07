@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ShoppingCart, User, Store, Bell, CheckCircle2, AlertTriangle, X, Sparkles, LogOut, UserCheck } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
-export default function Navbar({ activePage, setActivePage, onLogout }) {
+export default function Navbar({ activePage, setActivePage, onLogout, userRole, viewMode, setViewMode }) {
   const { cartCount, openCart, customer, showToast } = useCart();
   const [notifications, setNotifications] = useState([]);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
@@ -142,6 +142,30 @@ export default function Navbar({ activePage, setActivePage, onLogout }) {
                 ))
               )}
             </div>
+          )}
+
+          {/* If Merchant is viewing storefront, show Return to Console button */}
+          {userRole === "merchant" && (
+            <button
+              onClick={() => setViewMode && setViewMode("merchant_console")}
+              title="Return to RecoverAI Merchant Console"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.35rem",
+                padding: "0.45rem 0.85rem",
+                borderRadius: "var(--radius-md)",
+                background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
+                color: "#fff",
+                fontSize: "0.82rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                boxShadow: "0 0 12px rgba(99, 102, 241, 0.4)",
+              }}
+            >
+              <Store size={15} />
+              <span>Merchant Console</span>
+            </button>
           )}
 
           {/* Customer Account Avatar Button (Navigates to Profile) */}
