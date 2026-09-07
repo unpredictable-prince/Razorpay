@@ -4,37 +4,34 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Ensure project root, backend, and ecommerce backend directories are in sys.path
+# Ensure backend_dir is prioritized in sys.path for RecoverAI app imports
 api_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(api_dir)
 backend_dir = os.path.join(project_root, "backend")
-ecommerce_backend_dir = os.path.join(project_root, "ecommerce", "backend")
 
-for path in (project_root, backend_dir, ecommerce_backend_dir):
-    if path not in sys.path:
-        sys.path.insert(0, path)
+for path in (backend_dir, project_root):
+    if path in sys.path:
+        sys.path.remove(path)
+    sys.path.insert(0, path)
 
 # Enable Vercel environment flag
 os.environ["VERCEL"] = "1"
 
-# Import database initializers and routes
+# Import RecoverAI backend components
 from app.database import init_db as init_recoverai_db
-from ecommerce.backend.app.database import init_ecommerce_db
-from ecommerce.backend.app.seed_products import seed_products
-
 from app.routes.transactions import router as transactions_router
 from app.routes.webhooks import router as webhooks_router
 from app.routes.notifications import router as notifications_router
 from app.routes.demo import router as demo_router
 
-# Import ecommerce endpoints from ecommerce app
+# Import Aura Store e-commerce backend components
 import ecommerce.backend.app.main as ecommerce_app_module
 
 # Run initializers on top-level for Vercel serverless cold starts
 try:
     init_recoverai_db()
-    init_ecommerce_db()
-    seed_products()
+    ecommerce_app_module.init_ecommerce_db()
+    ecommerce_app_module.seed_products()
 except Exception as err:
     print("Notice: Vercel cold-start initialization status:", err)
 
@@ -42,9 +39,9 @@ except Exception as err:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_recoverai_db()
-    init_ecommerce_db()
     try:
-        seed_products()
+        ecommerce_app_module.init_ecommerce_db()
+        ecommerce_app_module.seed_products()
     except Exception as err:
         print("Notice: Product seeding status:", err)
     yield
