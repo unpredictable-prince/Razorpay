@@ -83,10 +83,11 @@ def root():
 
 @app.get("/health")
 def health_check():
-    return {"status": "ok", "service": "Aura Store E-Commerce API"}
+    return {"status": "ok", "message": "RecoverAI backend is running", "service": "Aura Store E-Commerce API"}
 
 
 @app.get("/api/config")
+@app.get("/config")
 def get_public_config():
     """Returns safe public credentials (Razorpay Key ID) for customer Checkout popup."""
     key_id = os.environ.get("RAZORPAY_KEY_ID", "rzp_test_mockkey")
@@ -94,7 +95,14 @@ def get_public_config():
 
 
 @app.get("/api/products", response_model=list[ProductResponse])
+@app.get("/products", response_model=list[ProductResponse])
 def get_products(category: str = None, db: Session = Depends(get_db)):
+    if db.query(Product).count() == 0:
+        try:
+            seed_products()
+        except Exception as err:
+            print("Notice: Auto-seeding products on cold start:", err)
+
     query = db.query(Product)
     if category and category.lower() != "all":
         query = query.filter(Product.category.ilike(category))
@@ -102,6 +110,7 @@ def get_products(category: str = None, db: Session = Depends(get_db)):
 
 
 @app.get("/api/products/{product_id}", response_model=ProductResponse)
+@app.get("/products/{product_id}", response_model=ProductResponse)
 def get_product_by_id(product_id: int, db: Session = Depends(get_db)):
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:

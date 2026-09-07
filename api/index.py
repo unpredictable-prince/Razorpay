@@ -30,16 +30,23 @@ from app.routes.demo import router as demo_router
 # Import ecommerce endpoints from ecommerce app
 import ecommerce.backend.app.main as ecommerce_app_module
 
+# Run initializers on top-level for Vercel serverless cold starts
+try:
+    init_recoverai_db()
+    init_ecommerce_db()
+    seed_products()
+except Exception as err:
+    print("Notice: Vercel cold-start initialization status:", err)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize databases on serverless startup
     init_recoverai_db()
     init_ecommerce_db()
     try:
         seed_products()
     except Exception as err:
-        print("Notice: Product seeding skipped or completed:", err)
+        print("Notice: Product seeding status:", err)
     yield
 
 
@@ -64,8 +71,8 @@ app.include_router(webhooks_router)
 app.include_router(notifications_router)
 app.include_router(demo_router)
 
-# Mount ecommerce backend routes under /api prefix
-app.mount("/api", ecommerce_app_module.app)
+# Include ecommerce backend routes directly (supports both /api/products and /products)
+app.include_router(ecommerce_app_module.app.router)
 
 
 @app.get("/")
