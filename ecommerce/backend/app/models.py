@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, DateTime, Integer, String, Text
-from app.database import Base
+from .database import Base
 
 
 class Product(Base):

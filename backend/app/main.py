@@ -29,18 +29,24 @@ from app.routes.demo import router as demo_router
 from app.routes.notifications import router as notifications_router
 from app.routes.transactions import router as transactions_router
 from app.routes.webhooks import router as webhooks_router
+import ecommerce.backend.app.main as ecommerce_app_module
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Automatically initialize SQLite database tables on startup
+    # Automatically initialize SQLite database tables & seed e-commerce products on startup
     init_db()
+    try:
+        ecommerce_app_module.init_ecommerce_db()
+        ecommerce_app_module.seed_products()
+    except Exception as err:
+        print("Notice: E-commerce DB init/seeding status:", err)
     yield
 
 
 app = FastAPI(
-    title="RecoverAI Backend",
-    description="AI-powered revenue recovery system for Razorpay merchants",
+    title="RecoverAI Unified Backend",
+    description="AI-powered revenue recovery system & Aura Store E-Commerce API",
     version="0.1.0",
     lifespan=lifespan,
 )
@@ -59,6 +65,9 @@ app.include_router(transactions_router)
 app.include_router(webhooks_router)
 app.include_router(notifications_router)
 app.include_router(demo_router)
+
+# Include Aura Store E-Commerce API routes directly
+app.include_router(ecommerce_app_module.app.router)
 
 
 @app.get("/")

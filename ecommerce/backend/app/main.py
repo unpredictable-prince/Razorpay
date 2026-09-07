@@ -31,9 +31,9 @@ if os.path.exists(env_path):
                 k, v = line.split("=", 1)
                 os.environ.setdefault(k.strip(), v.strip().strip("'\""))
 
-from app.database import get_db, init_ecommerce_db
-from app.models import Customer, Order, Product
-from app.schemas import (
+from .database import get_db, init_ecommerce_db
+from .models import Customer, Order, Product
+from .schemas import (
     CreateOrderRequest,
     CreateRazorpayOrderRequest,
     CreateRazorpayOrderResponse,
@@ -41,7 +41,7 @@ from app.schemas import (
     ProductResponse,
     VerifyPaymentRequest,
 )
-from app.seed_products import seed_products
+from .seed_products import seed_products
 
 
 @asynccontextmanager
