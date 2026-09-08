@@ -5,3 +5,4 @@ pydantic
 razorpay
 requests
 httpx
+pg8000
