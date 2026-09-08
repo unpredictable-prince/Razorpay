@@ -85,8 +85,12 @@ def root():
 @app.get("/health")
 @app.get("/api/health")
 def health_check():
+    from app.database import check_db_connection, IS_POSTGRES
+    db_ok = check_db_connection()
     return {
-        "status": "ok",
+        "status": "ok" if db_ok else "degraded",
         "service": "Unified Serverless API",
         "message": "RecoverAI & Aura Store APIs active on Vercel Serverless",
+        "database": "connected" if db_ok else "unreachable",
+        "database_type": "postgresql" if IS_POSTGRES else "sqlite",
     }

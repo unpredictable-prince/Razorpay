@@ -83,7 +83,15 @@ def root():
 
 @app.get("/health")
 def health_check():
-    return {"status": "ok", "message": "RecoverAI backend is running", "service": "Aura Store E-Commerce API"}
+    from .database import check_db_connection, IS_POSTGRES
+    db_ok = check_db_connection()
+    return {
+        "status": "ok" if db_ok else "degraded",
+        "message": "RecoverAI backend is running",
+        "service": "Aura Store E-Commerce API",
+        "database": "connected" if db_ok else "unreachable",
+        "database_type": "postgresql" if IS_POSTGRES else "sqlite",
+    }
 
 
 @app.get("/api/config")

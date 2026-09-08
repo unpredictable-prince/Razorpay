@@ -86,11 +86,15 @@ def root():
 
 @app.get("/health")
 def health_check():
-    """Health check endpoint to verify backend status."""
+    """Health check endpoint to verify backend status and database connectivity."""
+    from app.database import check_db_connection, IS_POSTGRES
+    db_ok = check_db_connection()
     return {
-        "status": "ok",
+        "status": "ok" if db_ok else "degraded",
         "message": "RecoverAI backend is running",
         "service": "RecoverAI API",
+        "database": "connected" if db_ok else "unreachable",
+        "database_type": "postgresql" if IS_POSTGRES else "sqlite",
     }
 
 
