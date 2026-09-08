@@ -94,7 +94,6 @@ SEED_PRODUCTS = [
 
 
 def seed_products():
-    init_ecommerce_db()
     db = SessionLocal()
     try:
         if db.query(Product).count() == 0:
