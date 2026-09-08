@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { Search, Filter, RotateCcw, ChevronRight, AlertCircle, Trash2 } from 'lucide-react';
 import { formatISTDateTime } from '../utils/dateUtils';
 
-export default function TransactionTable({ transactions, onSelectTransaction, onRefresh }) {
+export default function TransactionTable({ transactions, onSelectTransaction, onRefresh, onDelete }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [recoveryFilter, setRecoveryFilter] = useState('ALL');
   const [deletingPaymentId, setDeletingPaymentId] = useState(null);
   const [txToDelete, setTxToDelete] = useState(null);
 
-  const API_BASE = import.meta.env.VITE_RECOVERAI_API_URL || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : "");
+  const API_BASE = import.meta.env.VITE_RECOVERAI_API_URL || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://127.0.0.1:8000" : "");
 
   const formatINR = (paise) => {
     return new Intl.NumberFormat('en-IN', {
@@ -49,17 +49,23 @@ export default function TransactionTable({ transactions, onSelectTransaction, on
   const handleDeleteConfirm = async () => {
     if (!txToDelete) return;
     setDeletingPaymentId(txToDelete.payment_id);
+    if (onDelete) {
+      await onDelete(txToDelete.payment_id);
+      setTxToDelete(null);
+      setDeletingPaymentId(null);
+      return;
+    }
     try {
       const res = await fetch(`${API_BASE}/transactions/${txToDelete.payment_id}`, {
         method: 'DELETE',
       });
-      if (res.ok) {
-        setTxToDelete(null);
-        if (onRefresh) onRefresh();
+      if (res.ok && onRefresh) {
+        onRefresh();
       }
     } catch (err) {
       console.error("Failed to delete transaction:", err);
     } finally {
+      setTxToDelete(null);
       setDeletingPaymentId(null);
     }
   };

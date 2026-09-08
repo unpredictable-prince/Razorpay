@@ -189,6 +189,23 @@ export default function App() {
     }
   };
 
+  const handleDeleteTransaction = async (paymentId) => {
+    // 1. Optimistic removal so user instantly sees record disappear and modal close
+    setTransactions((prev) => prev.filter((t) => t.payment_id !== paymentId));
+    if (selectedTransaction && selectedTransaction.payment_id === paymentId) {
+      setSelectedTransaction(null);
+    }
+    // 2. Perform backend API delete
+    try {
+      await fetch(`${RECOVERAI_API_URL}/transactions/${paymentId}`, {
+        method: "DELETE",
+      });
+      fetchMerchantData();
+    } catch (err) {
+      console.error("Delete failed on backend:", err);
+    }
+  };
+
   return (
     <CartProvider>
       {!isAuthenticated ? (
@@ -341,6 +358,7 @@ export default function App() {
               <TransactionTable
                 transactions={transactions}
                 onSelectTransaction={(tx) => setSelectedTransaction(tx)}
+                onDelete={handleDeleteTransaction}
                 onRefresh={fetchMerchantData}
               />
 
@@ -348,6 +366,7 @@ export default function App() {
                 <TransactionDetailsModal
                   transaction={selectedTransaction}
                   onClose={() => setSelectedTransaction(null)}
+                  onDelete={handleDeleteTransaction}
                   onRefresh={fetchMerchantData}
                 />
               )}

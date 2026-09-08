@@ -12,28 +12,33 @@ import {
   Trash2,
 } from 'lucide-react';
 
-export default function TransactionDetailsModal({ transaction, onClose, onRefresh }) {
+export default function TransactionDetailsModal({ transaction, onClose, onRefresh, onDelete }) {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   if (!transaction) return null;
 
-  const API_BASE = import.meta.env.VITE_RECOVERAI_API_URL || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : "");
+  const API_BASE = import.meta.env.VITE_RECOVERAI_API_URL || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://127.0.0.1:8000" : "");
 
   const handleDelete = async () => {
     setIsDeleting(true);
+    if (onDelete) {
+      await onDelete(transaction.payment_id);
+      onClose();
+      return;
+    }
     try {
       const res = await fetch(`${API_BASE}/transactions/${transaction.payment_id}`, {
         method: 'DELETE',
       });
-      if (res.ok) {
-        if (onRefresh) onRefresh();
-        onClose();
+      if (res.ok && onRefresh) {
+        onRefresh();
       }
     } catch (err) {
       console.error("Delete failed:", err);
     } finally {
       setIsDeleting(false);
+      onClose();
     }
   };
 

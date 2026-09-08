@@ -198,6 +198,10 @@ def delete_transaction(payment_id: str, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Transaction with payment_id '{payment_id}' not found",
         )
+    # Also clean up any associated notifications
+    from app.models import Notification
+    db.query(Notification).filter(Notification.payment_id == payment_id).delete()
+
     db.delete(transaction)
     db.commit()
     return {"status": "success", "message": f"Transaction '{payment_id}' deleted successfully"}
