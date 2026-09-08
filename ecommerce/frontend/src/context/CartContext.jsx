@@ -28,34 +28,43 @@ export function CartProvider({ children }) {
   }, [cart]);
 
   const addToCart = (product, quantity = 1) => {
+    const pId = product.product_id || product.id;
     setCart((prevCart) => {
-      const existing = prevCart.find((item) => item.product_id === product.product_id);
+      const existing = prevCart.find((item) => (item.product_id || item.id) === pId);
       if (existing) {
         return prevCart.map((item) =>
-          item.product_id === product.product_id
+          (item.product_id || item.id) === pId
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      return [...prevCart, { ...product, quantity }];
+      return [...prevCart, { ...product, product_id: pId, id: pId, quantity }];
     });
     showToast(`Added ${product.name} to cart`);
   };
 
-  const updateQuantity = (productId, newQuantity) => {
-    if (newQuantity <= 0) {
-      removeFromCart(productId);
-      return;
-    }
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.product_id === productId ? { ...item, quantity: newQuantity } : item
-      )
-    );
+  const updateQuantity = (productId, newQuantityOrDelta) => {
+    setCart((prevCart) => {
+      return prevCart
+        .map((item) => {
+          const currentId = item.product_id || item.id;
+          if (currentId !== productId) return item;
+
+          let targetQty = newQuantityOrDelta;
+          if (newQuantityOrDelta === 1 || newQuantityOrDelta === -1) {
+            targetQty = item.quantity + newQuantityOrDelta;
+          }
+          if (targetQty <= 0) return null;
+          return { ...item, quantity: targetQty };
+        })
+        .filter(Boolean);
+    });
   };
 
   const removeFromCart = (productId) => {
-    setCart((prevCart) => prevCart.filter((item) => item.product_id !== productId));
+    setCart((prevCart) =>
+      prevCart.filter((item) => (item.product_id || item.id) !== productId)
+    );
     showToast("Item removed from cart");
   };
 

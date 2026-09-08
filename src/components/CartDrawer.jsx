@@ -10,8 +10,34 @@ export default function CartDrawer({ onProceedToCheckout }) {
   const formattedTotal = `₹${(cartTotal / 100).toLocaleString("en-IN")}`;
 
   return (
-    <div className="drawer-overlay" onClick={closeCart}>
-      <div className="drawer-panel" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="drawer-overlay"
+      onClick={closeCart}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(15, 23, 42, 0.75)",
+        backdropFilter: "blur(6px)",
+        zIndex: 9998,
+        display: "flex",
+        justifyContent: "flex-end",
+      }}
+    >
+      <div
+        className="drawer-panel"
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%",
+          maxWidth: "440px",
+          height: "100%",
+          background: "#0f172a",
+          borderLeft: "1px solid #1e293b",
+          boxShadow: "-10px 0 30px rgba(0,0,0,0.6)",
+          display: "flex",
+          flexDirection: "column",
+          zIndex: 9999,
+        }}
+      >
         {/* Drawer Header */}
         <div style={{ padding: "1.25rem 1.5rem", borderBottom: "var(--glass-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
