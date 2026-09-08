@@ -5,7 +5,7 @@ import sys
 # Ensure backend directory is in sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from app.database import SessionLocal, init_db
+from app.database import Base, engine, SessionLocal
 from app.models import Notification, Transaction
 
 # Realistic seed transactions featuring real customer names and identities
@@ -210,7 +210,7 @@ SAMPLE_TRANSACTIONS = [
 
 def seed_database():
     """Initializes database tables and seeds realistic demo transactions."""
-    init_db()
+    Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
         now = datetime.now(timezone.utc)

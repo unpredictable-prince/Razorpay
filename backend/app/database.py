@@ -82,24 +82,35 @@ def check_db_connection() -> bool:
         return False
 
 
+_INITIALIZING = False
+
 def init_db():
     """Initializes the database and ensures tables & seed data exist."""
-    import app.models  # noqa: F401
-    Base.metadata.create_all(bind=engine)
-
-    # Automatic self-seeding on cold starts if empty
+    global _INITIALIZING
+    if _INITIALIZING:
+        return
+    _INITIALIZING = True
     try:
-        db = SessionLocal()
-        from app.models import Transaction
-        if db.query(Transaction).count() == 0:
+        import app.models  # noqa: F401
+        Base.metadata.create_all(bind=engine)
+
+        # Automatic self-seeding on cold starts if empty
+        try:
+            db = SessionLocal()
             try:
-                from backend.database.seed import seed_database
-            except ImportError:
-                from database.seed import seed_database
-            seed_database()
-        db.close()
-    except Exception as e:
-        print("Notice: Auto-seed check status:", e)
+                from app.models import Transaction
+                if db.query(Transaction).count() == 0:
+                    try:
+                        from backend.database.seed import seed_database
+                    except ImportError:
+                        from database.seed import seed_database
+                    seed_database()
+            finally:
+                db.close()
+        except Exception as e:
+            print("Notice: Auto-seed check status:", e)
+    finally:
+        _INITIALIZING = False
 
 
 def get_db():
