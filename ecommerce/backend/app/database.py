@@ -9,11 +9,20 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 # Support Cloud SQL / PostgreSQL / Supabase / Neon or SQLite fallback
-db_url = os.environ.get("ECOMMERCE_DATABASE_URL") or os.environ.get("DATABASE_URL") or os.environ.get("POSTGRES_URL")
+db_url = (
+    os.environ.get("SUPABASE_DB_URL")
+    or os.environ.get("SUPABASE_DATABASE_URL")
+    or os.environ.get("DATABASE_URL")
+    or os.environ.get("POSTGRES_URL")
+    or os.environ.get("POSTGRESQL_URL")
+)
 
-if db_url and not db_url.startswith("sqlite"):
+if db_url:
+    # Fix standard postgresql scheme for SQLAlchemy with pure-Python pg8000 driver
     if db_url.startswith("postgres://"):
-        db_url = db_url.replace("postgres://", "postgresql://", 1)
+        db_url = db_url.replace("postgres://", "postgresql+pg8000://", 1)
+    elif db_url.startswith("postgresql://") and "+pg8000" not in db_url and "+psycopg2" not in db_url:
+        db_url = db_url.replace("postgresql://", "postgresql+pg8000://", 1)
     SQLALCHEMY_DATABASE_URL = db_url
     engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True, pool_recycle=300)
 else:
