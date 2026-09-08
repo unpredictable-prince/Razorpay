@@ -92,7 +92,10 @@ def init_db():
         db = SessionLocal()
         from app.models import Transaction
         if db.query(Transaction).count() == 0:
-            from database.seed import seed_database
+            try:
+                from backend.database.seed import seed_database
+            except ImportError:
+                from database.seed import seed_database
             seed_database()
         db.close()
     except Exception as e:

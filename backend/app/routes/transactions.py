@@ -11,10 +11,22 @@ from app.schemas import TransactionResponse, TransactionStatsResponse
 router = APIRouter(prefix="/transactions", tags=["Transactions"])
 
 
+@router.get("", response_model=List[TransactionResponse])
 @router.get("/", response_model=List[TransactionResponse])
 def get_all_transactions(db: Session = Depends(get_db)):
     """Retrieve all transaction records from the database."""
-    transactions = db.query(Transaction).all()
+    if db.query(Transaction).count() == 0:
+        try:
+            from database.seed import seed_database
+            seed_database()
+        except Exception:
+            try:
+                from backend.database.seed import seed_database
+                seed_database()
+            except Exception as e:
+                print("Notice: Auto-seed check status:", e)
+
+    transactions = db.query(Transaction).order_by(Transaction.created_at.desc()).all()
     return transactions
 
 
@@ -30,6 +42,17 @@ def get_failed_transactions(db: Session = Depends(get_db)):
 @router.get("/stats", response_model=TransactionStatsResponse)
 def get_transaction_stats(db: Session = Depends(get_db)):
     """Calculate and return real-time summary statistics for the merchant dashboard."""
+    if db.query(Transaction).count() == 0:
+        try:
+            from database.seed import seed_database
+            seed_database()
+        except Exception:
+            try:
+                from backend.database.seed import seed_database
+                seed_database()
+            except Exception as e:
+                print("Notice: Auto-seed check status:", e)
+
     all_transactions = db.query(Transaction).all()
 
     total_transactions = len(all_transactions)

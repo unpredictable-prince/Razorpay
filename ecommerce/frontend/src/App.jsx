@@ -99,7 +99,7 @@ export default function App() {
     try {
       const [statsRes, txRes] = await Promise.all([
         fetch(`${RECOVERAI_API_URL}/transactions/stats`),
-        fetch(`${RECOVERAI_API_URL}/transactions/`),
+        fetch(`${RECOVERAI_API_URL}/transactions`),
       ]);
 
       if (statsRes.ok && txRes.ok) {

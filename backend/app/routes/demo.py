@@ -43,7 +43,13 @@ async def simulate_demo_event(req: DemoSimulateRequest, db: Session = Depends(ge
     order_id = f"ord_demo_{os.urandom(4).hex()}"
     customer_id = f"cust_{req.customer_name.lower()[:3]}_01"
 
-    if req.scenario in ["bank_server_down", "card_expired", "authentication_failed", "customer_cancelled"]:
+    scenario_normalized = req.scenario
+    if scenario_normalized == "bank_failure":
+        scenario_normalized = "bank_server_down"
+    elif scenario_normalized == "auth_failure":
+        scenario_normalized = "authentication_failed"
+
+    if scenario_normalized in ["bank_server_down", "card_expired", "authentication_failed", "customer_cancelled"]:
         event_type = "payment.failed"
         payload = {
             "event": event_type,
