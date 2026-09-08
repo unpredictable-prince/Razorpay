@@ -1,6 +1,15 @@
-# RecoverAI — Autonomous Razorpay Revenue Recovery System
+# RecoverAI & Aura Store — Autonomous Razorpay Revenue Recovery & E-Commerce Platform
 
-**RecoverAI** is an AI-powered, policy-guarded revenue recovery system designed specifically for **Razorpay merchants**. When payment failures occur during online customer checkouts, RecoverAI ingests webhooks, validates request signatures via HMAC-SHA256, analyzes failure root causes, evaluates AI recovery strategies against strict deterministic policy guardrails, executes automated retries/re-engagements, and alerts merchants in real-time.
+[![Tests](https://img.shields.io/badge/pytest-81%20passed-success)](tests/)
+[![Architecture](https://img.shields.io/badge/Documentation-Master%20Blueprint-blue)](docs/MASTER_ARCHITECTURE_AND_BLUEPRINT.md)
+[![Database](https://img.shields.io/badge/Database-Supabase%20%2B%20SQLite-indigo)](supabase_schema.sql)
+[![Deployment](https://img.shields.io/badge/Deployment-Vercel%20Serverless-black)](vercel.json)
+
+> **Complete Architecture & Reproduction Blueprint**: For a comprehensive technical deep-dive, database schemas, and step-by-step reproduction instructions for any AI or engineer, see **[docs/MASTER_ARCHITECTURE_AND_BLUEPRINT.md](docs/MASTER_ARCHITECTURE_AND_BLUEPRINT.md)**.
+
+---
+
+**RecoverAI & Aura Store** is an enterprise-grade e-commerce storefront combined with an autonomous, policy-guarded revenue recovery platform designed for **Razorpay merchants**. When payment failures occur during customer checkout, RecoverAI ingests webhooks, cryptographically validates signatures via HMAC-SHA256, diagnoses root causes, evaluates AI recovery strategies against deterministic policy guardrails, executes automated retries/re-engagements, and synchronizes real-time metrics across both customer and merchant dashboards.
 
 ---
 
