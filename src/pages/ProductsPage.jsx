@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { Search, Filter } from "lucide-react";
 import ProductCard from "../components/ProductCard";
-import { fetchProducts } from "../services/api";
+import { fetchProducts, FALLBACK_PRODUCTS } from "../services/api";
 
 export default function ProductsPage({ onSelectProduct }) {
-  const [products, setProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [products, setProducts] = useState(() => FALLBACK_PRODUCTS);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
 
   const categories = ["All", "Audio", "Wearables", "Gaming", "Lifestyle", "Accessories", "Power", "Tech"];
 
   useEffect(() => {
-    setLoading(true);
+    const initial = activeCategory && activeCategory.toLowerCase() !== "all"
+      ? FALLBACK_PRODUCTS.filter((p) => p.category.toLowerCase() === activeCategory.toLowerCase())
+      : FALLBACK_PRODUCTS;
+    setProducts(initial);
+
     fetchProducts(activeCategory)
-      .then((data) => setProducts(data))
-      .catch((err) => console.error("Error fetching products:", err))
-      .finally(() => setLoading(false));
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setProducts(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching products:", err));
   }, [activeCategory]);
 
   const filteredProducts = products.filter((p) =>
@@ -71,11 +77,7 @@ export default function ProductsPage({ onSelectProduct }) {
         ))}
       </div>
 
-      {loading ? (
-        <div style={{ textAlign: "center", padding: "4rem", color: "var(--text-muted)" }}>
-          Loading products...
-        </div>
-      ) : filteredProducts.length === 0 ? (
+      {filteredProducts.length === 0 ? (
         <div style={{ textAlign: "center", padding: "4rem", color: "var(--text-muted)" }}>
           No products matched your search.
         </div>

@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { ArrowRight, ShieldCheck, Truck, Zap, Star, Sparkles } from "lucide-react";
 import ProductCard from "../components/ProductCard";
-import { fetchProducts } from "../services/api";
+import { fetchProducts, FALLBACK_PRODUCTS } from "../services/api";
 
 export default function HomePage({ onNavigate, onSelectProduct }) {
-  const [products, setProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState(() => FALLBACK_PRODUCTS);
 
   const categories = ["All", "Audio", "Wearables", "Gaming", "Lifestyle", "Accessories", "Power", "Tech"];
 
   useEffect(() => {
-    setLoading(true);
+    const initial = activeCategory && activeCategory.toLowerCase() !== "all"
+      ? FALLBACK_PRODUCTS.filter((p) => p.category.toLowerCase() === activeCategory.toLowerCase())
+      : FALLBACK_PRODUCTS;
+    setProducts(initial);
+
     fetchProducts(activeCategory)
-      .then((data) => setProducts(data))
-      .catch((err) => console.error("Error fetching products:", err))
-      .finally(() => setLoading(false));
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setProducts(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching products:", err));
   }, [activeCategory]);
 
   return (
@@ -149,17 +155,11 @@ export default function HomePage({ onNavigate, onSelectProduct }) {
           ))}
         </div>
 
-        {loading ? (
-          <div style={{ textAlign: "center", padding: "4rem", color: "var(--text-muted)" }}>
-            Loading Aura catalog...
-          </div>
-        ) : (
-          <div className="product-grid">
-            {products.map((prod) => (
-              <ProductCard key={prod.id} product={prod} onSelectProduct={onSelectProduct} />
-            ))}
-          </div>
-        )}
+        <div className="product-grid">
+          {products.map((prod) => (
+            <ProductCard key={prod.id} product={prod} onSelectProduct={onSelectProduct} />
+          ))}
+        </div>
       </section>
     </div>
   );

@@ -108,7 +108,12 @@ export async function fetchProducts(category = "") {
     const url = category && category.toLowerCase() !== "all" 
       ? `${API_BASE}/api/products?category=${encodeURIComponent(category)}` 
       : `${API_BASE}/api/products`;
-    const res = await fetch(url);
+    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), 2000) : null;
+    
+    const res = await fetch(url, { signal: controller ? controller.signal : undefined });
+    if (timeoutId) clearTimeout(timeoutId);
+    
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -116,7 +121,7 @@ export async function fetchProducts(category = "") {
       }
     }
   } catch (err) {
-    console.warn("Notice: Fetching from backend API failed, using fallback catalog:", err);
+    console.warn("Notice: Fetching from backend API failed or timed out, using fallback catalog:", err);
   }
 
   // Guaranteed fallback product list
