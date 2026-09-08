@@ -3,6 +3,7 @@ import sys
 import re
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.pool import NullPool
 
 # Ensure ecommerce backend directory is in sys.path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -47,13 +48,10 @@ raw_db_url = (
 SQLALCHEMY_DATABASE_URL = normalize_database_url(raw_db_url)
 
 if SQLALCHEMY_DATABASE_URL and not SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
-    # Production PostgreSQL / Supabase connection with serverless-friendly pooling
+    # Production PostgreSQL / Supabase connection: NullPool prevents connection limit exhaustion in serverless
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL,
-        pool_pre_ping=True,
-        pool_recycle=300,
-        pool_size=5,
-        max_overflow=10,
+        poolclass=NullPool,
     )
     IS_POSTGRES = True
 else:
@@ -86,14 +84,14 @@ def check_db_connection() -> bool:
 
 def init_ecommerce_db():
     """Initializes ecommerce database tables and seeds catalog if empty."""
-    import app.models  # noqa: F401
+    from . import models as ecommerce_models  # noqa: F401
     Base.metadata.create_all(bind=engine)
 
     try:
         db = SessionLocal()
-        from app.models import Product
+        from .models import Product
         if db.query(Product).count() == 0:
-            import app.main as ecommerce_main
+            import ecommerce.backend.app.main as ecommerce_main
             ecommerce_main.seed_products()
         db.close()
     except Exception as e:

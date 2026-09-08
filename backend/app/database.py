@@ -3,6 +3,7 @@ import sys
 import re
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.pool import NullPool
 
 # Ensure backend directory is in sys.path for app module imports
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,9 +29,7 @@ def normalize_database_url(url: str | None) -> str:
     
     # Clean up any sslmode params for pg8000 if present
     if "postgresql+pg8000" in url and "sslmode=" in url:
-        # pg8000 handles SSL context natively; normalize sslmode query param to prevent dialect parsing error
         url = re.sub(r"[?&]sslmode=[^&]*", "", url)
-        # Fix any dangling ? or trailing &
         if url.endswith("?") or url.endswith("&"):
             url = url[:-1]
             
@@ -49,13 +48,10 @@ raw_db_url = (
 SQLALCHEMY_DATABASE_URL = normalize_database_url(raw_db_url)
 
 if SQLALCHEMY_DATABASE_URL and not SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
-    # Production PostgreSQL / Supabase connection with serverless-friendly pooling
+    # Production PostgreSQL / Supabase connection: NullPool prevents connection limit exhaustion in serverless
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL,
-        pool_pre_ping=True,
-        pool_recycle=300,
-        pool_size=5,
-        max_overflow=10,
+        poolclass=NullPool,
     )
     IS_POSTGRES = True
 else:
