@@ -27,23 +27,14 @@ from app.routes.demo import router as demo_router
 # Import Aura Store e-commerce backend components
 import ecommerce.backend.app.main as ecommerce_app_module
 
-# Run initializers on top-level for Vercel serverless cold starts
-try:
-    init_recoverai_db()
-    ecommerce_app_module.init_ecommerce_db()
-    ecommerce_app_module.seed_products()
-except Exception as err:
-    print("Notice: Vercel cold-start initialization status:", err)
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_recoverai_db()
     try:
+        init_recoverai_db()
         ecommerce_app_module.init_ecommerce_db()
         ecommerce_app_module.seed_products()
     except Exception as err:
-        print("Notice: Product seeding status:", err)
+        print("Notice: Unified serverless initialization status:", err)
     yield
 
 
