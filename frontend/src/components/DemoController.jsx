@@ -55,37 +55,38 @@ export default function DemoController({ onTriggerScenario, onResetDemo }) {
         boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-        <Zap size={22} color="#818cf8" />
+      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <Zap size={26} color="#818cf8" />
         <div>
-          <h3 style={{ fontSize: "0.95rem", fontWeight: 800, color: "#f8fafc", margin: 0 }}>
+          <h3 style={{ fontSize: "1.15rem", fontWeight: 800, color: "#f8fafc", margin: 0 }}>
             RecoverAI Interactive Demo Controller
           </h3>
-          <p style={{ fontSize: "0.8rem", color: "#a5b4fc", margin: "0.15rem 0 0 0" }}>
+          <p style={{ fontSize: "0.95rem", color: "#c7d2fe", margin: "0.25rem 0 0 0" }}>
             Trigger payment failure scenarios through the real backend pipeline for customer <strong>Sam</strong>
           </p>
         </div>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.5rem" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.75rem" }}>
         <button
           onClick={() => handleSimulate("bank_server_down")}
           disabled={isSimulating}
           style={{
             background: "#4f46e5",
             color: "#fff",
-            fontWeight: 700,
-            fontSize: "0.8rem",
-            padding: "0.45rem 0.85rem",
-            borderRadius: "6px",
+            fontWeight: 800,
+            fontSize: "0.95rem",
+            padding: "0.6rem 1.15rem",
+            borderRadius: "8px",
             display: "flex",
             alignItems: "center",
-            gap: "0.35rem",
+            gap: "0.5rem",
             border: "none",
             cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(79, 70, 229, 0.4)",
           }}
         >
-          <Play size={14} />
+          <Play size={16} />
           <span>Run Demo (Bank Failure)</span>
         </button>
 
@@ -95,10 +96,10 @@ export default function DemoController({ onTriggerScenario, onResetDemo }) {
           style={{
             background: "#334155",
             color: "#e2e8f0",
-            fontWeight: 600,
-            fontSize: "0.8rem",
-            padding: "0.45rem 0.75rem",
-            borderRadius: "6px",
+            fontWeight: 700,
+            fontSize: "0.95rem",
+            padding: "0.6rem 1rem",
+            borderRadius: "8px",
             border: "1px solid #475569",
             cursor: "pointer",
           }}
@@ -112,10 +113,10 @@ export default function DemoController({ onTriggerScenario, onResetDemo }) {
           style={{
             background: "#334155",
             color: "#e2e8f0",
-            fontWeight: 600,
-            fontSize: "0.8rem",
-            padding: "0.45rem 0.75rem",
-            borderRadius: "6px",
+            fontWeight: 700,
+            fontSize: "0.95rem",
+            padding: "0.6rem 1rem",
+            borderRadius: "8px",
             border: "1px solid #475569",
             cursor: "pointer",
           }}
@@ -129,10 +130,10 @@ export default function DemoController({ onTriggerScenario, onResetDemo }) {
           style={{
             background: "#334155",
             color: "#e2e8f0",
-            fontWeight: 600,
-            fontSize: "0.8rem",
-            padding: "0.45rem 0.75rem",
-            borderRadius: "6px",
+            fontWeight: 700,
+            fontSize: "0.95rem",
+            padding: "0.6rem 1rem",
+            borderRadius: "8px",
             border: "1px solid #475569",
             cursor: "pointer",
           }}
@@ -145,18 +146,18 @@ export default function DemoController({ onTriggerScenario, onResetDemo }) {
           style={{
             background: "transparent",
             color: "#ef4444",
-            fontWeight: 600,
-            fontSize: "0.8rem",
-            padding: "0.45rem 0.75rem",
-            borderRadius: "6px",
+            fontWeight: 700,
+            fontSize: "0.95rem",
+            padding: "0.6rem 1rem",
+            borderRadius: "8px",
             border: "1px solid #ef4444",
             display: "flex",
             alignItems: "center",
-            gap: "0.35rem",
+            gap: "0.5rem",
             cursor: "pointer",
           }}
         >
-          <RotateCcw size={14} />
+          <RotateCcw size={16} />
           <span>Reset Demo</span>
         </button>
       </div>

@@ -130,38 +130,38 @@ export default function TransactionTable({ transactions, onSelectTransaction }) 
             <tbody>
               {filteredTransactions.map((tx) => (
                 <tr key={tx.id} onClick={() => onSelectTransaction(tx)}>
-                  <td style={{ fontWeight: 600, color: 'var(--color-brand)' }}>
+                  <td style={{ fontWeight: 700, color: 'var(--color-brand)', fontFamily: 'monospace', fontSize: '1.02rem' }}>
                     {tx.payment_id}
                   </td>
                   <td>
-                    <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
+                    <div style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)' }}>
                       {tx.customer_name || tx.customer_id}
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                    <div style={{ fontSize: '0.88rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
                       {tx.customer_id}
                     </div>
                   </td>
-                  <td style={{ fontWeight: 700 }}>{formatINR(tx.amount)}</td>
-                  <td>{tx.currency}</td>
+                  <td style={{ fontWeight: 800, fontSize: '1.08rem' }}>{formatINR(tx.amount)}</td>
+                  <td style={{ fontWeight: 600 }}>{tx.currency}</td>
                   <td>
                     <span className={`badge badge-${tx.status.toLowerCase()}`}>
                       {tx.status}
                     </span>
                   </td>
-                  <td style={{ color: tx.failure_reason ? 'var(--color-danger)' : 'var(--text-muted)' }}>
+                  <td style={{ color: tx.failure_reason ? 'var(--color-danger)' : 'var(--text-muted)', fontWeight: 600 }}>
                     {tx.failure_reason || '—'}
                   </td>
-                  <td>{tx.retry_count}</td>
+                  <td style={{ fontWeight: 700, fontSize: '1.05rem' }}>{tx.retry_count}</td>
                   <td>
                     <span className={`badge badge-${tx.recovery_status.toLowerCase()}`}>
                       {tx.recovery_status}
                     </span>
                   </td>
-                  <td style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
+                  <td style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', fontWeight: 600 }}>
                     {formatISTDateTime(tx.created_at)}
                   </td>
                   <td>
-                    <ChevronRight size={16} color="var(--text-muted)" />
+                    <ChevronRight size={18} color="var(--text-muted)" />
                   </td>
                 </tr>
               ))}

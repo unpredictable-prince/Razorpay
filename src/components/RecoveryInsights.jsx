@@ -34,34 +34,34 @@ export default function RecoveryInsights({ stats, transactions }) {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: 16,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: 18,
         }}
       >
-        <div style={{ background: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Failed Revenue</span>
-          <p style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--color-danger)', marginTop: 4 }}>
+        <div style={{ background: 'var(--bg-secondary)', padding: 20, borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+          <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Failed Revenue</span>
+          <p style={{ fontSize: '1.65rem', fontWeight: 900, color: 'var(--color-danger)', marginTop: 6 }}>
             {formatINR(stats.failed_revenue)}
           </p>
         </div>
 
-        <div style={{ background: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Recoverable Potential</span>
-          <p style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--color-warning)', marginTop: 4 }}>
+        <div style={{ background: 'var(--bg-secondary)', padding: 20, borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+          <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Recoverable Potential</span>
+          <p style={{ fontSize: '1.65rem', fontWeight: 900, color: 'var(--color-warning)', marginTop: 6 }}>
             {formatINR(recoverableRevenue)}
           </p>
         </div>
 
-        <div style={{ background: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Recovered Revenue</span>
-          <p style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--color-success)', marginTop: 4 }}>
+        <div style={{ background: 'var(--bg-secondary)', padding: 20, borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+          <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Recovered Revenue</span>
+          <p style={{ fontSize: '1.65rem', fontWeight: 900, color: 'var(--color-success)', marginTop: 6 }}>
             {formatINR(stats.recovered_revenue)}
           </p>
         </div>
 
-        <div style={{ background: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Recovery Rate</span>
-          <p style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--color-brand)', marginTop: 4 }}>
+        <div style={{ background: 'var(--bg-secondary)', padding: 20, borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+          <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Recovery Rate</span>
+          <p style={{ fontSize: '1.65rem', fontWeight: 900, color: 'var(--color-brand)', marginTop: 6 }}>
             {stats.recovery_rate || 0}%
           </p>
         </div>

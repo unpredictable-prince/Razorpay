@@ -127,10 +127,10 @@ export default function TransactionDetailsModal({ transaction, onClose }) {
         {/* Modal Header */}
         <div className="modal-header">
           <div>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: '0.92rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>
               Transaction Inspection
             </span>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <h2 style={{ fontSize: '1.45rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: 12, marginTop: 4 }}>
               {transaction.payment_id}
               <span className={`badge badge-${transaction.status.toLowerCase()}`}>
                 {transaction.status}
@@ -138,7 +138,7 @@ export default function TransactionDetailsModal({ transaction, onClose }) {
             </h2>
           </div>
           <button className="btn-close" onClick={onClose}>
-            <X size={20} />
+            <X size={24} />
           </button>
         </div>
 
@@ -148,55 +148,55 @@ export default function TransactionDetailsModal({ transaction, onClose }) {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-              gap: 16,
+              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gap: 18,
               background: 'var(--bg-secondary)',
-              padding: 16,
+              padding: 20,
               borderRadius: 'var(--radius-lg)',
               border: '1px solid var(--border-color)',
             }}
           >
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Customer Name</span>
-              <p style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{transaction.customer_name || 'N/A'}</p>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>Customer Name</span>
+              <p style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)', marginTop: 2 }}>{transaction.customer_name || 'N/A'}</p>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Customer ID</span>
-              <p style={{ fontWeight: 600, fontFamily: 'monospace' }}>{transaction.customer_id}</p>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>Customer ID</span>
+              <p style={{ fontWeight: 700, fontSize: '1.02rem', fontFamily: 'monospace', marginTop: 2 }}>{transaction.customer_id}</p>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Customer Email</span>
-              <p style={{ fontWeight: 600 }}>{transaction.customer_email || 'N/A'}</p>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>Customer Email</span>
+              <p style={{ fontWeight: 700, fontSize: '1.02rem', marginTop: 2 }}>{transaction.customer_email || 'N/A'}</p>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Customer Phone</span>
-              <p style={{ fontWeight: 600 }}>{transaction.customer_phone || 'N/A'}</p>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>Customer Phone</span>
+              <p style={{ fontWeight: 700, fontSize: '1.02rem', marginTop: 2 }}>{transaction.customer_phone || 'N/A'}</p>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Order ID</span>
-              <p style={{ fontWeight: 600, fontFamily: 'monospace', color: 'var(--color-brand)' }}>{transaction.order_id || 'N/A'}</p>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>Order ID</span>
+              <p style={{ fontWeight: 700, fontSize: '1.02rem', fontFamily: 'monospace', color: 'var(--color-brand)', marginTop: 2 }}>{transaction.order_id || 'N/A'}</p>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Payment ID</span>
-              <p style={{ fontWeight: 600, fontFamily: 'monospace' }}>{transaction.payment_id}</p>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>Payment ID</span>
+              <p style={{ fontWeight: 700, fontSize: '1.02rem', fontFamily: 'monospace', marginTop: 2 }}>{transaction.payment_id}</p>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Amount</span>
-              <p style={{ fontWeight: 700, color: 'var(--color-brand)' }}>{formatINR(transaction.amount)}</p>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>Amount</span>
+              <p style={{ fontWeight: 900, fontSize: '1.25rem', color: 'var(--color-brand)', marginTop: 2 }}>{formatINR(transaction.amount)}</p>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Failure Reason</span>
-              <p style={{ fontWeight: 600, color: transaction.failure_reason ? 'var(--color-danger)' : 'var(--text-primary)' }}>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>Failure Reason</span>
+              <p style={{ fontWeight: 700, fontSize: '1.02rem', color: transaction.failure_reason ? 'var(--color-danger)' : 'var(--text-primary)', marginTop: 2 }}>
                 {transaction.failure_reason || 'None'}
               </p>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Retry Count</span>
-              <p style={{ fontWeight: 600 }}>{transaction.retry_count}</p>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>Retry Count</span>
+              <p style={{ fontWeight: 700, fontSize: '1.05rem', marginTop: 2 }}>{transaction.retry_count}</p>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Recovery Status</span>
-              <p>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>Recovery Status</span>
+              <p style={{ marginTop: 2 }}>
                 <span className={`badge badge-${transaction.recovery_status.toLowerCase()}`}>
                   {transaction.recovery_status}
                 </span>
@@ -208,25 +208,25 @@ export default function TransactionDetailsModal({ transaction, onClose }) {
           {isFailed && (
             <div
               style={{
-                marginTop: "1.25rem",
-                padding: "1.25rem",
-                borderRadius: "8px",
-                background: "linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(15, 23, 42, 0.4) 100%)",
+                marginTop: "1.5rem",
+                padding: "1.5rem",
+                borderRadius: "12px",
+                background: "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(15, 23, 42, 0.5) 100%)",
                 border: "1px solid var(--color-brand)",
               }}
             >
-              <h3 style={{ fontSize: "0.95rem", fontWeight: 800, margin: "0 0 0.75rem 0", display: "flex", alignItems: "center", gap: "0.5rem", color: "var(--color-brand)" }}>
-                <Info size={18} /> Why Did This Payment Fail?
+              <h3 style={{ fontSize: "1.15rem", fontWeight: 800, margin: "0 0 1rem 0", display: "flex", alignItems: "center", gap: "0.65rem", color: "var(--color-brand)" }}>
+                <Info size={20} /> Why Did This Payment Fail?
               </h3>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", fontSize: "0.85rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", fontSize: "0.98rem" }}>
                 <div>
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.75rem" }}>Technical Error Code</span>
-                  <p style={{ fontWeight: 700, fontFamily: "monospace", color: "var(--color-danger)", margin: "0.15rem 0 0.5rem 0" }}>
+                  <span style={{ color: "var(--text-muted)", fontSize: "0.88rem", fontWeight: 700 }}>Technical Error Code</span>
+                  <p style={{ fontWeight: 800, fontFamily: "monospace", fontSize: "1.05rem", color: "var(--color-danger)", margin: "0.25rem 0 0.75rem 0" }}>
                     {transaction.failure_reason || "unknown_failure"}
                   </p>
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.75rem" }}>Human Explanation</span>
-                  <p style={{ color: "var(--text-primary)", margin: "0.15rem 0 0 0" }}>
+                  <span style={{ color: "var(--text-muted)", fontSize: "0.88rem", fontWeight: 700 }}>Human Explanation</span>
+                  <p style={{ color: "var(--text-primary)", margin: "0.25rem 0 0 0", lineHeight: "1.6" }}>
                     {transaction.failure_reason === "bank_server_down"
                       ? "The customer's bank or payment gateway infrastructure temporarily failed to respond during authorization."
                       : transaction.failure_reason === "network_timeout"
@@ -242,12 +242,12 @@ export default function TransactionDetailsModal({ transaction, onClose }) {
                 </div>
 
                 <div>
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.75rem" }}>Can RecoverAI Recover It?</span>
-                  <p style={{ fontWeight: 800, color: pipeline.recoverable ? "var(--color-success)" : "var(--color-danger)", margin: "0.15rem 0 0.5rem 0" }}>
+                  <span style={{ color: "var(--text-muted)", fontSize: "0.88rem", fontWeight: 700 }}>Can RecoverAI Recover It?</span>
+                  <p style={{ fontWeight: 900, fontSize: "1.05rem", color: pipeline.recoverable ? "var(--color-success)" : "var(--color-danger)", margin: "0.25rem 0 0.75rem 0" }}>
                     {pipeline.recoverable ? "YES — HIGH POTENTIAL" : "NO — MANUAL / BLOCKED"}
                   </p>
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.75rem" }}>Why Was Recovery Allowed / Guarded?</span>
-                  <p style={{ color: "var(--text-primary)", margin: "0.15rem 0 0 0" }}>
+                  <span style={{ color: "var(--text-muted)", fontSize: "0.88rem", fontWeight: 700 }}>Why Was Recovery Allowed / Guarded?</span>
+                  <p style={{ color: "var(--text-primary)", margin: "0.25rem 0 0 0", lineHeight: "1.6" }}>
                     {pipeline.policyReason}
                   </p>
                 </div>
@@ -256,8 +256,8 @@ export default function TransactionDetailsModal({ transaction, onClose }) {
           )}
 
           {/* RecoverAI Decision Pipeline Flow */}
-          <h3 style={{ fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, marginTop: "1.25rem" }}>
-            <Brain size={18} color="var(--color-brand)" />
+          <h3 style={{ fontSize: '1.2rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: 10, marginTop: "1.75rem" }}>
+            <Brain size={22} color="var(--color-brand)" />
             RecoverAI Decision Pipeline Trace
           </h3>
 
