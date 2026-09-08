@@ -81,7 +81,7 @@ export default function PaymentPage({ order, onNavigate, onPaymentComplete }) {
       if (window.Razorpay) {
         const rzp = new window.Razorpay(options);
         rzp.on("payment.failed", async function (response) {
-          const paymentId = response.error?.metadata?.payment_id || `pay_fail_${os.urandom(4).hex()}`;
+          const paymentId = response.error?.metadata?.payment_id || `pay_fail_${Math.random().toString(36).substring(2, 10)}`;
           const reason = response.error?.reason || response.error?.description || "bank_server_down";
           await verifyPayment({
             order_id: order.order_id,

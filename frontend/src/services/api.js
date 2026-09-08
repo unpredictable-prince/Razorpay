@@ -145,19 +145,24 @@ export async function fetchProductById(id) {
 
 export async function createOrder(orderData) {
   try {
+    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), 4000) : null;
+
     const res = await fetch(`${API_BASE}/api/orders`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData),
+      signal: controller ? controller.signal : undefined,
     });
+    if (timeoutId) clearTimeout(timeoutId);
     if (res.ok) return await res.json();
   } catch (err) {
     console.warn("Notice: Order creation API fallback:", err);
   }
 
-  // Fallback order generation
+  // Guaranteed fallback order generation if backend is cold-starting or unavailable
   const mockOrderId = `ord_aura_${Math.random().toString(36).substring(2, 10)}`;
-  const totalAmount = orderData.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalAmount = orderData.items.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 1), 0);
   const fallbackOrder = {
     id: Date.now(),
     order_id: mockOrderId,

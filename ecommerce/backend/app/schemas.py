@@ -17,11 +17,11 @@ class ProductResponse(BaseModel):
 
 
 class CartItemSchema(BaseModel):
-    product_id: int
+    product_id: Any
     name: str
     price: int
-    quantity: int
-    image: str
+    quantity: int = 1
+    image: Optional[str] = None
 
 
 class CreateOrderRequest(BaseModel):
