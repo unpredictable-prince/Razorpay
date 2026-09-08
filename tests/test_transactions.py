@@ -71,3 +71,63 @@ def test_get_transaction_stats():
     assert "human_review_required" in stats
     assert stats["total_transactions"] >= 10
 
+
+def test_delete_transaction():
+    # Create or ensure a test transaction exists
+    db = SessionLocal()
+    test_tx = Transaction(
+        payment_id="pay_test_del_999",
+        order_id="order_test_del_999",
+        customer_id="cust_del_999",
+        customer_name="Delete Test User",
+        customer_email="del@example.com",
+        customer_phone="+919999999999",
+        amount=150000,
+        currency="INR",
+        status="failed",
+        failure_reason="test_error",
+        retry_count=0,
+        recovery_status="not_required",
+    )
+    db.add(test_tx)
+    db.commit()
+    db.close()
+
+    # Call DELETE /transactions/{payment_id}
+    res = client.delete("/transactions/pay_test_del_999")
+    assert res.status_code == 200
+    assert res.json()["status"] == "success"
+
+    # Verify 404 on subsequent get
+    res_get = client.get("/transactions/pay_test_del_999")
+    assert res_get.status_code == 404
+
+
+def test_delete_customer_data():
+    db = SessionLocal()
+    test_tx1 = Transaction(
+        payment_id="pay_cust_del_1",
+        order_id="order_cust_del_1",
+        customer_id="cust_multi_del",
+        amount=10000,
+        status="captured",
+        recovery_status="not_required",
+    )
+    test_tx2 = Transaction(
+        payment_id="pay_cust_del_2",
+        order_id="order_cust_del_2",
+        customer_id="cust_multi_del",
+        amount=20000,
+        status="failed",
+        recovery_status="not_required",
+    )
+    db.add_all([test_tx1, test_tx2])
+    db.commit()
+    db.close()
+
+    # Call DELETE /transactions/customer/{customer_id}
+    res = client.delete("/transactions/customer/cust_multi_del")
+    assert res.status_code == 200
+    assert "Deleted 2 records" in res.json()["message"]
+
+

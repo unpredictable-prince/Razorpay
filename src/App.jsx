@@ -341,12 +341,14 @@ export default function App() {
               <TransactionTable
                 transactions={transactions}
                 onSelectTransaction={(tx) => setSelectedTransaction(tx)}
+                onRefresh={fetchMerchantData}
               />
 
               {selectedTransaction && (
                 <TransactionDetailsModal
                   transaction={selectedTransaction}
                   onClose={() => setSelectedTransaction(null)}
+                  onRefresh={fetchMerchantData}
                 />
               )}
 

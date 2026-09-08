@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   X,
   ShieldCheck,
@@ -9,10 +9,33 @@ import {
   Clock,
   ArrowRight,
   Info,
+  Trash2,
 } from 'lucide-react';
 
-export default function TransactionDetailsModal({ transaction, onClose }) {
+export default function TransactionDetailsModal({ transaction, onClose, onRefresh }) {
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   if (!transaction) return null;
+
+  const API_BASE = import.meta.env.VITE_RECOVERAI_API_URL || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : "");
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`${API_BASE}/transactions/${transaction.payment_id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        if (onRefresh) onRefresh();
+        onClose();
+      }
+    } catch (err) {
+      console.error("Delete failed:", err);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const formatINR = (paise) => {
     return new Intl.NumberFormat('en-IN', {
@@ -334,15 +357,74 @@ export default function TransactionDetailsModal({ transaction, onClose }) {
                   {pipeline.serviceStatus}
                 </span>
               </div>
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-primary)', marginBottom: 6 }}>
+              <p style={{ fontSize: '0.98rem', color: 'var(--text-primary)', marginBottom: 6 }}>
                 {pipeline.serviceMessage}
               </p>
               {pipeline.recoveredAmount > 0 && (
-                <div style={{ fontSize: '0.85rem', color: 'var(--color-success)', fontWeight: 700 }}>
+                <div style={{ fontSize: '0.95rem', color: 'var(--color-success)', fontWeight: 800 }}>
                   ✓ Amount Recovered: {formatINR(pipeline.recoveredAmount)}
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Modal Actions Footer */}
+          <div style={{ marginTop: '2rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {!isConfirmingDelete ? (
+              <button
+                type="button"
+                onClick={() => setIsConfirmingDelete(true)}
+                style={{
+                  background: 'rgba(244, 63, 94, 0.12)',
+                  color: '#f43f5e',
+                  border: '1px solid rgba(244, 63, 94, 0.3)',
+                  padding: '0.65rem 1.15rem',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontWeight: 700,
+                  fontSize: '0.95rem',
+                }}
+              >
+                <Trash2 size={16} />
+                <span>Delete Record</span>
+              </button>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <span style={{ fontSize: '0.95rem', color: '#f43f5e', fontWeight: 700 }}>Confirm deletion?</span>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  style={{
+                    background: '#f43f5e',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '0.55rem 1rem',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontWeight: 800,
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  {isDeleting ? 'Deleting...' : 'Yes, Delete'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsConfirmingDelete(false)}
+                  className="btn-secondary"
+                  style={{ padding: '0.55rem 0.85rem', fontSize: '0.9rem' }}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+
+            <button className="btn-secondary" onClick={onClose} style={{ marginLeft: 'auto' }}>
+              Close
+            </button>
           </div>
         </div>
       </div>

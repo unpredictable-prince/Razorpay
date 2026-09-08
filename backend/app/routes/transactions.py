@@ -185,3 +185,43 @@ def get_transaction_by_payment_id(payment_id: str, db: Session = Depends(get_db)
             detail=f"Transaction with payment_id '{payment_id}' not found",
         )
     return transaction
+
+
+@router.delete("/{payment_id}")
+def delete_transaction(payment_id: str, db: Session = Depends(get_db)):
+    """Delete a specific transaction record from the merchant database."""
+    transaction = (
+        db.query(Transaction).filter(Transaction.payment_id == payment_id).first()
+    )
+    if not transaction:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Transaction with payment_id '{payment_id}' not found",
+        )
+    db.delete(transaction)
+    db.commit()
+    return {"status": "success", "message": f"Transaction '{payment_id}' deleted successfully"}
+
+
+@router.delete("/customer/{customer_id}")
+def delete_customer_data(customer_id: str, db: Session = Depends(get_db)):
+    """Delete all transaction records associated with a specific customer."""
+    txs = (
+        db.query(Transaction)
+        .filter(
+            (Transaction.customer_id == customer_id)
+            | (Transaction.customer_name == customer_id)
+        )
+        .all()
+    )
+    if not txs:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No transaction records found for customer '{customer_id}'",
+        )
+    count = len(txs)
+    for t in txs:
+        db.delete(t)
+    db.commit()
+    return {"status": "success", "message": f"Deleted {count} records for customer '{customer_id}'"}
+
